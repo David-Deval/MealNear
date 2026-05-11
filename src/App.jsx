@@ -86,7 +86,7 @@ const INITIAL_RESTAURANTS = [
 ];
 
 export default function App() {
-  // --- STATE UTAMA ---
+  // ---- STATE UTAMA ----
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem(USER_STORAGE_KEY);
     return saved ? JSON.parse(saved) : null;
