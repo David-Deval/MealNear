@@ -29,7 +29,7 @@ import {
   Navigation,
   Power,
   Calendar,
-  Quote,
+  Quote, 
   Save,
   ChevronLeft,
   Bell,
