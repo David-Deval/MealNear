@@ -29,7 +29,7 @@ import {
   Navigation,
   Power,
   Calendar,
-  Quote, 
+  Quote,
   Save,
   ChevronLeft,
   Bell,
@@ -82,11 +82,165 @@ const INITIAL_RESTAURANTS = [
       { id: 'm4', name: 'Latte', price: 18000 },
       { id: 'm5', name: 'Croissant', price: 12000 }
     ]
+  },
+  {
+    id: 'r3',
+    name: 'Bakmi Grogol Sentosa',
+    area: 'Grogol',
+    address: 'Jl. Dr. Muwardi I No. 45, Grogol',
+    coords: '-6.1674,106.7881',
+    isOpen: true,
+    openTime: "07:00",
+    closeTime: "17:00",
+    rating: 4.6,
+    reviews: [
+      { id: 1, user: 'Rian', comment: 'Bakmi karetnya kenyal mantap, kuahnya gurih.', rating: 5 },
+      { id: 2, user: 'Dewi', comment: 'Porsi pas untuk sarapan, pangsit gorengnya juara.', rating: 4 }
+    ],
+    menu: [
+      { id: 'm6', name: 'Bakmi Ayam Jamur', price: 28000 },
+      { id: 'm7', name: 'Pangsit Goreng (5 Pcs)', price: 15000 },
+      { id: 'm8', name: 'Bakso Sapi Kuah', price: 20000 }
+    ]
+  },
+  {
+    id: 'r4',
+    name: 'Nasi Uduk Bang Kebon',
+    area: 'Kebon Jeruk',
+    address: 'Jl. Kebon Jeruk Raya No. 12, Samping Kantor Pos',
+    coords: '-6.1912,106.7645',
+    isOpen: true,
+    openTime: "17:00",
+    closeTime: "23:30",
+    rating: 4.7,
+    reviews: [
+      { id: 1, user: 'Joko', comment: 'Sambalnya pedas manis mantap! Selalu ramai pas malam.', rating: 5 }
+    ],
+    menu: [
+      { id: 'm9', name: 'Nasi Uduk Spesial (Ayam & Tahu)', price: 22000 },
+      { id: 'm10', name: 'Sate Paru Goreng', price: 8000 },
+      { id: 'm11', name: 'Kol Goreng Tepung', price: 5000 }
+    ]
+  },
+  {
+    id: 'r5',
+    name: 'Soto Betawi Palmerah Ibu Haji',
+    area: 'Palmerah',
+    address: 'Jl. Palmerah Barat No. 89, Dekat Stasiun',
+    coords: '-6.2089,106.7972',
+    isOpen: true,
+    openTime: "09:00",
+    closeTime: "19:00",
+    rating: 4.4,
+    reviews: [
+      { id: 1, user: 'Hendra', comment: 'Kuah susunya kental berempah, dagingnya empuk banget.', rating: 5 },
+      { id: 2, user: 'Rina', comment: 'Enak, tapi sering kehabisan kalau jam makan siang.', rating: 4 }
+    ],
+    menu: [
+      { id: 'm12', name: 'Soto Betawi Daging Campur', price: 35000 },
+      { id: 'm13', name: 'Nasi Putih', price: 6000 },
+      { id: 'm14', name: 'Es Jeruk Nipis', price: 8000 }
+    ]
+  },
+  {
+    id: 'r6',
+    name: 'Kembangan Coffee & Bites',
+    area: 'Kembangan',
+    address: 'Ruko Sentra Niaga, Jl. Puri Kembangan No. 2A',
+    coords: '-6.1887,106.7381',
+    isOpen: true,
+    openTime: "09:00",
+    closeTime: "22:00",
+    rating: 4.7,
+    reviews: [
+      { id: 1, user: 'Bella', comment: 'Suasana modern, kopi arenya creamy & manisnya pas.', rating: 5 }
+    ],
+    menu: [
+      { id: 'm15', name: 'Es Kopi Susu Aren Pekat', price: 19000 },
+      { id: 'm16', name: 'Waffle Cokelat Klasik', price: 15000 },
+      { id: 'm17', name: 'Fries & Sausage Combo', price: 25000 }
+    ]
+  },
+  {
+    id: 'r7',
+    name: 'Penyetan Cengkareng Maknyus',
+    area: 'Cengkareng',
+    address: 'Jl. Outer Ring Road Cengkareng No. 56',
+    coords: '-6.1523,106.7212',
+    isOpen: true,
+    openTime: "11:00",
+    closeTime: "21:00",
+    rating: 4.3,
+    reviews: [
+      { id: 1, user: 'Dono', comment: 'Bebek penyetnya garing di luar, sambalnya melimpah!', rating: 4 }
+    ],
+    menu: [
+      { id: 'm18', name: 'Bebek Penyet Sambal Ijo', price: 32000 },
+      { id: 'm19', name: 'Ayam Penyet Kremes', price: 22000 },
+      { id: 'm20', name: 'Tempe Penyet Kemangi', price: 10000 }
+    ]
+  },
+  {
+    id: 'r8',
+    name: 'Martabak Manis Kemanggisan',
+    area: 'Kemanggisan',
+    address: 'Jl. KH. Syahdan No. 44, Dekat Binus',
+    coords: '-6.2011,106.7812',
+    isOpen: true,
+    openTime: "16:00",
+    closeTime: "23:00",
+    rating: 4.8,
+    reviews: [
+      { id: 1, user: 'Kiki', comment: 'Menteganya melimpah ruah, adonan lembut banget.', rating: 5 }
+    ],
+    menu: [
+      { id: 'm21', name: 'Martabak Klasik Cokelat Kacang Keju', price: 45000 },
+      { id: 'm22', name: 'Martabak Tipker Keju Jagung', price: 25000 },
+      { id: 'm23', name: 'Martabak Telur Daging Sapi (3 Telur)', price: 40000 }
+    ]
+  },
+  {
+    id: 'r9',
+    name: 'Steak Rakyat Palmerah',
+    area: 'Palmerah',
+    address: 'Jl. Palmerah Utara No. 110',
+    coords: '-6.2105,106.7925',
+    isOpen: true,
+    openTime: "12:00",
+    closeTime: "22:00",
+    rating: 4.2,
+    reviews: [
+      { id: 1, user: 'Alwi', comment: 'Steak ayam krispi murah meriah, saus BBQ-nya oke.', rating: 4 }
+    ],
+    menu: [
+      { id: 'm24', name: 'Double Crispy Chicken Steak BBQ', price: 29000 },
+      { id: 'm25', name: 'Sirloin Beef Steak Pepper', price: 49000 },
+      { id: 'm26', name: 'French Fries Extra Cheese', price: 12000 }
+    ]
+  },
+  {
+    id: 'r10',
+    name: 'Ketoprak Grogol Jaya',
+    area: 'Grogol',
+    address: 'Jl. Kyai Tapa No. 18, Dekat Universitas Trisakti',
+    coords: '-6.1633,106.7842',
+    isOpen: true,
+    openTime: "08:00",
+    closeTime: "16:00",
+    rating: 4.5,
+    reviews: [
+      { id: 1, user: 'Rara', comment: 'Bumbu kacangnya diulek halus banget, manis gurih mantap.', rating: 5 }
+    ],
+    menu: [
+      { id: 'm27', name: 'Ketoprak Spesial Telur Asin', price: 20000 },
+      { id: 'm28', name: 'Ketoprak Biasa Telur Ceplok', price: 16000 },
+      { id: 'm29', name: 'Es Kelapa Muda Gula Aren', price: 10000 }
+    ]
   }
 ];
 
 export default function App() {
-  // ---- STATE UTAMA ----
+  // --- STATE UTAMA ---
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem(USER_STORAGE_KEY);
     return saved ? JSON.parse(saved) : null;
@@ -119,6 +273,22 @@ export default function App() {
   const [newRating, setNewRating] = useState(5);
   const [isAddingMenu, setIsAddingMenu] = useState(false);
   const [menuInput, setMenuInput] = useState({ name: '', price: '' });
+  
+  // State baru untuk mengedit jam operasional mitra
+  const [isEditingHours, setIsEditingHours] = useState(false);
+  const [hoursInput, setHoursInput] = useState({ openTime: '08:00', closeTime: '21:00' });
+
+  // Reset form data ketika berganti mode registrasi atau peran
+  useEffect(() => {
+    setFormData({
+      username: '',
+      email: '',
+      password: '',
+      businessName: '',
+      location: JAKARTA_BARAT_AREAS[0],
+      addressDetail: ''
+    });
+  }, [authMode, selectedRole]);
 
   // --- DERIVED STATE ---
   const selectedRes = restaurants.find(r => r.id === selectedResId);
@@ -136,6 +306,16 @@ export default function App() {
       localStorage.removeItem(USER_STORAGE_KEY);
     }
   }, [user]);
+
+  // Sinkronisasi input jam operasional saat restoran mitra terdeteksi
+  useEffect(() => {
+    if (myRestaurant) {
+      setHoursInput({
+        openTime: myRestaurant.openTime || "08:00",
+        closeTime: myRestaurant.closeTime || "22:00"
+      });
+    }
+  }, [myRestaurant]);
 
   // --- MODUL NOTIFIKASI ---
   useEffect(() => {
@@ -163,16 +343,35 @@ export default function App() {
   const handleAuthSubmit = (e) => {
     e.preventDefault();
 
-    // Validasi Panjang Username
+    // Validasi dasar (berlaku untuk semua)
     if (formData.username.length < 5) {
       showToast("Username minimal 5 karakter", "error");
       return;
     }
 
-    // Validasi Panjang Password
     if (formData.password.length < 8) {
       showToast("Password minimal 8 karakter", "error");
       return;
+    }
+
+    // Validasi khusus Registrasi
+    if (authMode === 'register') {
+      if (!formData.email.includes('@') || !formData.email.includes('.')) {
+        showToast("Format Email tidak valid", "error");
+        return;
+      }
+
+      // Validasi Tambahan Khusus Mitra Bisnis
+      if (selectedRole === 'mitra') {
+        if (!formData.businessName.trim() || formData.businessName.length < 3) {
+          showToast("Nama bisnis minimal 3 karakter", "error");
+          return;
+        }
+        if (!formData.addressDetail.trim() || formData.addressDetail.length < 10) {
+          showToast("Alamat lengkap minimal 10 karakter untuk rute kurir", "error");
+          return;
+        }
+      }
     }
 
     setIsLoading(true);
@@ -201,7 +400,7 @@ export default function App() {
       setUser({ role: selectedRole, name: displayName, isGuest: false });
       setIsLoading(false);
       setView(selectedRole === 'user' ? 'landing' : 'dashboard');
-      showToast(`Selamat datang kembali, ${displayName}!`);
+      showToast(authMode === 'login' ? `Selamat datang kembali, ${displayName}!` : `Pendaftaran ${displayName} Berhasil!`);
     }, 1200);
   };
 
@@ -247,6 +446,25 @@ export default function App() {
       }
       return res;
     }));
+  };
+
+  const handleUpdateHours = () => {
+    if (!hoursInput.openTime || !hoursInput.closeTime) {
+      showToast("Jam buka dan tutup wajib diisi", "error");
+      return;
+    }
+    setRestaurants(prev => prev.map(res => {
+      if (res.name === user.name) {
+        return {
+          ...res,
+          openTime: hoursInput.openTime,
+          closeTime: hoursInput.closeTime
+        };
+      }
+      return res;
+    }));
+    setIsEditingHours(false);
+    showToast("Jam operasional berhasil diperbarui");
   };
 
   const handleAddMenu = () => {
@@ -357,10 +575,16 @@ export default function App() {
            <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mt-2">Jakarta Barat Culinary Guide</p>
         </div>
 
-        <div className="bg-white p-10 rounded-[3rem] shadow-2xl w-full max-w-md border border-gray-100">
+        <div className="bg-white p-8 md:p-10 rounded-[3rem] shadow-2xl w-full max-w-lg border border-gray-100">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-black text-gray-800">{authMode === 'login' ? 'Selamat Datang' : 'Buat Akun Baru'}</h2>
-            <p className="text-gray-400 text-sm mt-1 font-medium">{authMode === 'login' ? 'Masuk untuk akses fitur lengkap' : 'Gabung dalam jaringan kuliner Jakbar'}</p>
+            <h2 className="text-2xl font-black text-gray-800">
+              {authMode === 'login' ? 'Selamat Datang' : 'Buat Akun Baru'}
+            </h2>
+            <p className="text-gray-400 text-sm mt-1 font-medium">
+              {authMode === 'login' 
+                ? 'Masuk untuk akses fitur lengkap kuliner' 
+                : `Daftar sebagai ${selectedRole === 'user' ? 'Pengunjung' : 'Mitra Bisnis'} MealNear`}
+            </p>
           </div>
 
           <div className="flex p-1.5 bg-gray-100 rounded-[1.8rem] mb-8">
@@ -373,11 +597,13 @@ export default function App() {
           </div>
 
           <form onSubmit={handleAuthSubmit} className="space-y-4">
+            
+            {/* INPUT FIELD: USERNAME (Selalu Ada) */}
             <div className="relative group">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-orange-500 transition-colors" size={18} />
               <input 
                 type="text" 
-                placeholder="Username" 
+                placeholder="Username Akun" 
                 className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-[1.2rem] outline-none focus:ring-4 focus:ring-orange-50 focus:bg-white focus:border-orange-200 transition-all text-sm font-bold" 
                 value={formData.username} 
                 onChange={(e) => setFormData({...formData, username: e.target.value})} 
@@ -388,11 +614,77 @@ export default function App() {
               </p>
             </div>
 
+            {/* INPUT FIELD: EMAIL (Hanya Saat Daftar) */}
+            {authMode === 'register' && (
+              <div className="relative group animate-in slide-in-from-top-2 duration-200">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-orange-500 transition-colors" size={18} />
+                <input 
+                  type="email" 
+                  placeholder={selectedRole === 'user' ? "Alamat Email Aktif" : "Email Bisnis / Kantor"} 
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-[1.2rem] outline-none focus:ring-4 focus:ring-orange-50 focus:bg-white focus:border-orange-200 transition-all text-sm font-bold" 
+                  value={formData.email} 
+                  onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                  required 
+                />
+              </div>
+            )}
+
+            {/* INPUT FIELD: NAMA BISNIS & ALAMAT (Hanya Saat Daftar Mitra Bisnis) */}
+            {authMode === 'register' && selectedRole === 'mitra' && (
+              <div className="space-y-4 animate-in slide-in-from-top-2 duration-300">
+                {/* Nama Bisnis */}
+                <div className="relative group">
+                  <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-orange-500 transition-colors" size={18} />
+                  <input 
+                    type="text" 
+                    placeholder="Nama Warung / Kedai / Restoran" 
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-[1.2rem] outline-none focus:ring-4 focus:ring-orange-50 focus:bg-white focus:border-orange-200 transition-all text-sm font-bold" 
+                    value={formData.businessName} 
+                    onChange={(e) => setFormData({...formData, businessName: e.target.value})} 
+                    required 
+                  />
+                </div>
+
+                {/* Pilih Area Jakarta Barat */}
+                <div className="relative group flex flex-col gap-1">
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2">Area Operasional Toko</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-orange-500 transition-colors" size={18} />
+                    <select 
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-[1.2rem] outline-none focus:ring-4 focus:ring-orange-50 focus:bg-white focus:border-orange-200 transition-all text-sm font-bold appearance-none" 
+                      value={formData.location} 
+                      onChange={(e) => setFormData({...formData, location: e.target.value})}
+                    >
+                      {JAKARTA_BARAT_AREAS.map(area => (
+                        <option key={area} value={area}>{area}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Alamat Lengkap */}
+                <div className="relative group">
+                  <MapPinned className="absolute left-4 top-4 text-gray-300 group-focus-within:text-orange-500 transition-colors" size={18} />
+                  <textarea 
+                    placeholder="Alamat Lengkap (Jl, No, RT/RW, Patokan Toko)" 
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-[1.2rem] outline-none focus:ring-4 focus:ring-orange-50 focus:bg-white focus:border-orange-200 transition-all text-sm font-bold h-24 resize-none" 
+                    value={formData.addressDetail} 
+                    onChange={(e) => setFormData({...formData, addressDetail: e.target.value})} 
+                    required 
+                  />
+                  <p className={`text-[10px] mt-1 ml-2 font-black italic tracking-tighter ${formData.addressDetail.length > 0 && formData.addressDetail.length < 10 ? 'text-red-500' : 'text-gray-300'}`}>
+                    * Minimal 10 karakter untuk verifikasi maps
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* INPUT FIELD: PASSWORD (Selalu Ada) */}
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-orange-500 transition-colors" size={18} />
               <input 
                 type="password" 
-                placeholder="Password" 
+                placeholder="Password Akun" 
                 className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-[1.2rem] outline-none focus:ring-4 focus:ring-orange-50 focus:bg-white focus:border-orange-200 transition-all text-sm font-bold" 
                 value={formData.password} 
                 onChange={(e) => setFormData({...formData, password: e.target.value})} 
@@ -466,12 +758,58 @@ export default function App() {
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Total Menu</p>
                   <p className="text-2xl font-black text-gray-800">{myRestaurant?.menu.length || 0}</p>
                </div>
-               <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm text-center col-span-2">
+               
+               {/* KARTU JAM OPERASIONAL YANG DAPAT DIEDIT */}
+               <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm text-center col-span-2 flex flex-col justify-center items-center">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Jam Operasional</p>
-                  <div className="flex items-center justify-center gap-2">
-                     <Clock size={16} className="text-orange-500"/>
-                     <span className="font-bold text-gray-800">{myRestaurant?.openTime} - {myRestaurant?.closeTime}</span>
-                  </div>
+                  {isEditingHours ? (
+                    <div className="flex flex-col items-center gap-2 w-full animate-in fade-in duration-200">
+                      <div className="flex items-center gap-1.5 justify-center">
+                        <input 
+                          type="time" 
+                          className="px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-800 focus:ring-2 focus:ring-orange-500 outline-none"
+                          value={hoursInput.openTime}
+                          onChange={(e) => setHoursInput({ ...hoursInput, openTime: e.target.value })}
+                        />
+                        <span className="text-gray-400 text-xs font-bold">s/d</span>
+                        <input 
+                          type="time" 
+                          className="px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-800 focus:ring-2 focus:ring-orange-500 outline-none"
+                          value={hoursInput.closeTime}
+                          onChange={(e) => setHoursInput({ ...hoursInput, closeTime: e.target.value })}
+                        />
+                      </div>
+                      <div className="flex gap-1.5 mt-1">
+                        <button 
+                          onClick={handleUpdateHours} 
+                          className="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded-lg shadow-md hover:scale-105 active:scale-95 transition-all"
+                          title="Simpan Jam Operasional"
+                        >
+                          <Check size={14} />
+                        </button>
+                        <button 
+                          onClick={() => setIsEditingHours(false)} 
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-500 p-1.5 rounded-lg hover:scale-105 active:scale-95 transition-all"
+                          title="Batal"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center w-full">
+                      <div className="flex items-center justify-center gap-2">
+                         <Clock size={16} className="text-orange-500"/>
+                         <span className="font-bold text-gray-800">{myRestaurant?.openTime} - {myRestaurant?.closeTime}</span>
+                      </div>
+                      <button 
+                        onClick={() => setIsEditingHours(true)} 
+                        className="mt-2 text-[10px] font-black text-orange-600 hover:text-orange-700 hover:underline flex items-center gap-1 transition-all"
+                      >
+                        <Edit2 size={10}/> UBAH JAM
+                      </button>
+                    </div>
+                  )}
                </div>
             </div>
 
