@@ -241,6 +241,8 @@ const INITIAL_RESTAURANTS = [
 
 export default function App() {
   // --- STATE UTAMA ---
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem(USER_STORAGE_KEY);
     return saved ? JSON.parse(saved) : null;
@@ -278,6 +280,41 @@ export default function App() {
   const [isEditingHours, setIsEditingHours] = useState(false);
   const [hoursInput, setHoursInput] = useState({ openTime: '08:00', closeTime: '21:00' });
 
+  const normalizeMenuItem = (item) => ({
+    ...item,
+    id: item.id || item._id?.toString() || `${Date.now()}-${Math.random()}`
+  });
+
+  const normalizeReviewItem = (item) => ({
+    ...item,
+    id: item.id || item._id?.toString() || `${Date.now()}-${Math.random()}`
+  });
+
+  const normalizeRestaurant = (restaurant) => ({
+    ...restaurant,
+    id: restaurant.id || restaurant._id?.toString() || restaurant.name,
+    menu: (restaurant.menu || []).map(normalizeMenuItem),
+    reviews: (restaurant.reviews || []).map(normalizeReviewItem)
+  });
+
+  const normalizeRestaurants = (list) => (list || []).map(normalizeRestaurant);
+
+  const loadRestaurants = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/restaurants`);
+      if (!response.ok) throw new Error('Gagal memuat restoran dari backend');
+      const data = await response.json();
+      setRestaurants(normalizeRestaurants(data));
+    } catch (error) {
+      console.error(error);
+      showToast('Backend tidak terhubung, data lokal digunakan.', 'info');
+    }
+  };
+
+  useEffect(() => {
+    loadRestaurants();
+  }, []);
+
   // Reset form data ketika berganti mode registrasi atau peran
   useEffect(() => {
     setFormData({
@@ -292,7 +329,7 @@ export default function App() {
 
   // --- DERIVED STATE ---
   const selectedRes = restaurants.find(r => r.id === selectedResId);
-  const myRestaurant = restaurants.find(r => r.name === user?.name);
+  const myRestaurant = restaurants.find(r => r.name === user?.name || r.id === user?.restaurantId);
 
   // --- MODUL PERSISTENCE ---
   useEffect(() => {
@@ -340,7 +377,7 @@ export default function App() {
   };
 
   // --- LOGIKA AUTH DENGAN VALIDASI ---
-  const handleAuthSubmit = (e) => {
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
 
     // Validasi dasar (berlaku untuk semua)
@@ -375,14 +412,16 @@ export default function App() {
     }
 
     setIsLoading(true);
-    
-    setTimeout(() => {
+
+    try {
       let displayName = formData.username || 'User';
+      let restaurantId = null;
+
       if (selectedRole === 'mitra') {
         displayName = formData.businessName || formData.username;
+
         if (authMode === 'register') {
           const newResto = {
-            id: `r${Date.now()}`,
             name: displayName,
             area: formData.location,
             address: formData.addressDetail || `Area ${formData.location}`,
@@ -394,14 +433,30 @@ export default function App() {
             reviews: [],
             menu: []
           };
-          setRestaurants(prev => [newResto, ...prev]);
+
+          const response = await fetch(`${API_BASE_URL}/restaurants`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newResto)
+          });
+
+          if (!response.ok) throw new Error('Gagal membuat restoran mitra');
+
+          const createdRestaurant = normalizeRestaurant(await response.json());
+          setRestaurants(prev => [createdRestaurant, ...prev]);
+          restaurantId = createdRestaurant.id;
         }
       }
-      setUser({ role: selectedRole, name: displayName, isGuest: false });
-      setIsLoading(false);
+
+      setUser({ role: selectedRole, name: displayName, restaurantId, isGuest: false });
       setView(selectedRole === 'user' ? 'landing' : 'dashboard');
       showToast(authMode === 'login' ? `Selamat datang kembali, ${displayName}!` : `Pendaftaran ${displayName} Berhasil!`);
-    }, 1200);
+    } catch (error) {
+      console.error(error);
+      showToast('Terjadi kesalahan koneksi backend.', 'error');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const continueAsGuest = () => {
@@ -437,75 +492,122 @@ export default function App() {
     });
   }, [restaurants, searchQuery, selectedArea, maxBudget]);
 
-  const toggleStoreStatus = () => {
-    setRestaurants(prev => prev.map(res => {
-      if (res.name === user.name) {
-        const nextState = !res.isOpen;
-        showToast(`Toko sekarang ${nextState ? 'Buka' : 'Tutup'}`, nextState ? 'success' : 'info');
-        return { ...res, isOpen: nextState };
-      }
-      return res;
-    }));
+  const toggleStoreStatus = async () => {
+    const restaurantId = myRestaurant?.id || user?.restaurantId;
+    if (!restaurantId) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/restaurants/${restaurantId}/status`, {
+        method: 'PUT'
+      });
+      if (!response.ok) throw new Error('Gagal memperbarui status toko');
+
+      const updatedRestaurant = normalizeRestaurant(await response.json());
+      setRestaurants(prev => prev.map(res => (res.id === updatedRestaurant.id ? updatedRestaurant : res)));
+      showToast(`Toko sekarang ${updatedRestaurant.isOpen ? 'Buka' : 'Tutup'}`, updatedRestaurant.isOpen ? 'success' : 'info');
+    } catch (error) {
+      console.error(error);
+      showToast('Gagal memperbarui status toko.', 'error');
+    }
   };
 
-  const handleUpdateHours = () => {
+  const handleUpdateHours = async () => {
     if (!hoursInput.openTime || !hoursInput.closeTime) {
       showToast("Jam buka dan tutup wajib diisi", "error");
       return;
     }
-    setRestaurants(prev => prev.map(res => {
-      if (res.name === user.name) {
-        return {
-          ...res,
-          openTime: hoursInput.openTime,
-          closeTime: hoursInput.closeTime
-        };
-      }
-      return res;
-    }));
-    setIsEditingHours(false);
-    showToast("Jam operasional berhasil diperbarui");
+
+    const restaurantId = myRestaurant?.id || user?.restaurantId;
+    if (!restaurantId) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/restaurants/${restaurantId}/hours`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ openTime: hoursInput.openTime, closeTime: hoursInput.closeTime })
+      });
+      if (!response.ok) throw new Error('Gagal memperbarui jam operasional');
+
+      const updatedRestaurant = normalizeRestaurant(await response.json());
+      setRestaurants(prev => prev.map(res => (res.id === updatedRestaurant.id ? updatedRestaurant : res)));
+      setIsEditingHours(false);
+      showToast("Jam operasional berhasil diperbarui");
+    } catch (error) {
+      console.error(error);
+      showToast('Gagal memperbarui jam operasional.', 'error');
+    }
   };
 
-  const handleAddMenu = () => {
+  const handleAddMenu = async () => {
     if (!menuInput.name || !menuInput.price) return;
-    setRestaurants(prev => prev.map(res => {
-      if (res.name === user.name) {
-        return {
-          ...res,
-          menu: [...res.menu, { id: `m${Date.now()}`, name: menuInput.name, price: parseInt(menuInput.price) }]
-        };
-      }
-      return res;
-    }));
-    setMenuInput({ name: '', price: '' });
-    setIsAddingMenu(false);
-    showToast("Menu berhasil ditambahkan");
+    const price = parseInt(menuInput.price, 10);
+    if (Number.isNaN(price)) {
+      showToast('Harga menu harus angka', 'error');
+      return;
+    }
+
+    const restaurantId = myRestaurant?.id || user?.restaurantId;
+    if (!restaurantId) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/restaurants/${restaurantId}/menu`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: menuInput.name, price })
+      });
+      if (!response.ok) throw new Error('Gagal menambahkan menu');
+
+      const updatedRestaurant = normalizeRestaurant(await response.json());
+      setRestaurants(prev => prev.map(res => (res.id === updatedRestaurant.id ? updatedRestaurant : res)));
+      setMenuInput({ name: '', price: '' });
+      setIsAddingMenu(false);
+      showToast("Menu berhasil ditambahkan");
+    } catch (error) {
+      console.error(error);
+      showToast('Gagal menambahkan menu.', 'error');
+    }
   };
 
-  const handleDeleteMenu = (menuId) => {
-    setRestaurants(prev => prev.map(res => {
-      if (res.name === user.name) {
-        return { ...res, menu: res.menu.filter(m => m.id !== menuId) };
-      }
-      return res;
-    }));
-    showToast("Menu dihapus", "info");
+  const handleDeleteMenu = async (menuId) => {
+    const restaurantId = myRestaurant?.id || user?.restaurantId;
+    if (!restaurantId) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/restaurants/${restaurantId}/menu/${menuId}`, {
+        method: 'DELETE'
+      });
+      if (!response.ok) throw new Error('Gagal menghapus menu');
+
+      const updatedRestaurant = normalizeRestaurant(await response.json());
+      setRestaurants(prev => prev.map(res => (res.id === updatedRestaurant.id ? updatedRestaurant : res)));
+      showToast("Menu dihapus", "info");
+    } catch (error) {
+      console.error(error);
+      showToast('Gagal menghapus menu.', 'error');
+    }
   };
 
-  const handleSubmitReview = (id) => {
+  const handleSubmitReview = async (id) => {
     if (!newComment.trim()) return;
-    setRestaurants(prev => prev.map(res => {
-      if (res.id === id) {
-        return {
-          ...res,
-          reviews: [{ id: Date.now(), user: user.name, comment: newComment, rating: newRating }, ...res.reviews]
-        };
-      }
-      return res;
-    }));
-    setNewComment('');
-    setNewRating(5);
+    const payload = { user: user.name, comment: newComment.trim(), rating: newRating };
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/restaurants/${id}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('Gagal mengirim review');
+
+      const updatedRestaurant = normalizeRestaurant(await response.json());
+      setRestaurants(prev => prev.map(res => (res.id === updatedRestaurant.id ? updatedRestaurant : res)));
+      setNewComment('');
+      setNewRating(5);
+      showToast('Review berhasil dikirim!', 'success');
+    } catch (error) {
+      console.error(error);
+      showToast('Gagal mengirim review.', 'error');
+    }
   };
 
   // --- KOMPONEN UI ---
@@ -1103,7 +1205,7 @@ export default function App() {
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: #fdba74;
           border-radius: 10px;
-        }
+        }+
         input[type=range]::-webkit-slider-thumb {
           box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
           border: 4px solid white;
