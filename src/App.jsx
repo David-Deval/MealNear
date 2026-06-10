@@ -391,14 +391,12 @@ export default function App() {
       return;
     }
 
-    // Validasi khusus Registrasi
     if (authMode === 'register') {
       if (!formData.email.includes('@') || !formData.email.includes('.')) {
         showToast("Format Email tidak valid", "error");
         return;
       }
 
-      // Validasi Tambahan Khusus Mitra Bisnis
       if (selectedRole === 'mitra') {
         if (!formData.businessName.trim() || formData.businessName.length < 3) {
           showToast("Nama bisnis minimal 3 karakter", "error");
@@ -414,46 +412,53 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      let displayName = formData.username || 'User';
-      let restaurantId = null;
+      const endpoint = authMode === 'register' ? '/auth/register' : '/auth/login';
+      const payload = {
+        username: formData.username,
+        password: formData.password
+      };
 
-      if (selectedRole === 'mitra') {
-        displayName = formData.businessName || formData.username;
-
-        if (authMode === 'register') {
-          const newResto = {
-            name: displayName,
-            area: formData.location,
-            address: formData.addressDetail || `Area ${formData.location}`,
-            coords: '-6.2000,106.8000',
-            isOpen: true,
-            openTime: "08:00",
-            closeTime: "21:00",
-            rating: 0,
-            reviews: [],
-            menu: []
-          };
-
-          const response = await fetch(`${API_BASE_URL}/restaurants`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newResto)
-          });
-
-          if (!response.ok) throw new Error('Gagal membuat restoran mitra');
-
-          const createdRestaurant = normalizeRestaurant(await response.json());
-          setRestaurants(prev => [createdRestaurant, ...prev]);
-          restaurantId = createdRestaurant.id;
+      if (authMode === 'register') {
+        payload.email = formData.email;
+        payload.role = selectedRole;
+        if (selectedRole === 'mitra') {
+          payload.businessName = formData.businessName;
+          payload.location = formData.location;
+          payload.addressDetail = formData.addressDetail;
         }
       }
 
-      setUser({ role: selectedRole, name: displayName, restaurantId, isGuest: false });
-      setView(selectedRole === 'user' ? 'landing' : 'dashboard');
-      showToast(authMode === 'login' ? `Selamat datang kembali, ${displayName}!` : `Pendaftaran ${displayName} Berhasil!`);
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Terjadi kesalahan saat autentikasi.');
+      }
+
+      const userData = {
+        role: data.role,
+        name: data.role === 'mitra' ? (data.restaurant?.name || data.username) : data.username,
+        email: data.email,
+        restaurantId: data.restaurantId || null,
+        isGuest: false
+      };
+
+      setUser(userData);
+      setSelectedRole(data.role);
+      setView(data.role === 'mitra' ? 'dashboard' : 'landing');
+      showToast(authMode === 'login' ? `Selamat datang kembali, ${userData.name}!` : `Pendaftaran ${userData.name} berhasil!`);
+
+      if (data.restaurant) {
+        const createdRestaurant = normalizeRestaurant(data.restaurant);
+        setRestaurants(prev => [createdRestaurant, ...prev.filter(r => r.id !== createdRestaurant.id)]);
+      }
     } catch (error) {
       console.error(error);
-      showToast('Terjadi kesalahan koneksi backend.', 'error');
+      showToast(error.message || 'Terjadi kesalahan koneksi backend.', 'error');
     } finally {
       setIsLoading(false);
     }

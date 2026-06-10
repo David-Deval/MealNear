@@ -1,6 +1,7 @@
 // backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
@@ -32,7 +33,124 @@ const RestaurantSchema = new mongoose.Schema({
 
 const Restaurant = mongoose.model('Restaurant', RestaurantSchema);
 
+// Skema Data User
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  passwordHash: { type: String, required: true },
+  role: { type: String, enum: ['user', 'mitra'], default: 'user' },
+  restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', UserSchema);
+
 // --- API ENDPOINTS ---
+
+// Auth: Registrasi pengguna / mitra
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { username, email, password, role, businessName, location, addressDetail } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'Username, email, dan password wajib diisi.' });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const existing = await User.findOne({ $or: [{ email: normalizedEmail }, { username }] });
+    if (existing) {
+      return res.status(409).json({ message: 'Email atau username sudah terdaftar.' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const userData = {
+      username,
+      email: normalizedEmail,
+      passwordHash,
+      role: role === 'mitra' ? 'mitra' : 'user'
+    };
+
+    let createdRestaurant = null;
+    if (role === 'mitra') {
+      if (!businessName || !location || !addressDetail) {
+        return res.status(400).json({ message: 'Business name, location, dan address detail wajib untuk mitra.' });
+      }
+
+      const newResto = new Restaurant({
+        name: businessName,
+        area: location,
+        address: addressDetail,
+        coords: '-6.2000,106.8000',
+        isOpen: true,
+        openTime: '08:00',
+        closeTime: '21:00',
+        rating: 0,
+        reviews: [],
+        menu: []
+      });
+      createdRestaurant = await newResto.save();
+      userData.restaurantId = createdRestaurant._id;
+    }
+
+    const user = new User(userData);
+    await user.save();
+
+    res.status(201).json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      restaurantId: user.restaurantId,
+      restaurant: createdRestaurant ? createdRestaurant.toObject() : null
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat registrasi.' });
+  }
+});
+
+// Auth: Login pengguna / mitra
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username/email dan password wajib diisi.' });
+    }
+
+    const lookup = username.toLowerCase().trim();
+    const user = await User.findOne({
+      $or: [
+        { email: lookup },
+        { username: req.body.username }
+      ]
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: 'Akun tidak ditemukan. Pastikan username atau email benar.' });
+    }
+
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      return res.status(401).json({ message: 'Password salah. Coba lagi.' });
+    }
+
+    let restaurant = null;
+    if (user.role === 'mitra' && user.restaurantId) {
+      restaurant = await Restaurant.findById(user.restaurantId);
+    }
+
+    res.json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      restaurantId: user.restaurantId,
+      restaurant: restaurant ? restaurant.toObject() : null
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat login.' });
+  }
+});
 
 // 1. Ambil semua restoran (Untuk Pengunjung)
 app.get('/api/restaurants', async (req, res) => {
